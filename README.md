@@ -21,6 +21,31 @@ DIAGRAM AVTOMATA - TODO
 
 ## Matematična definicija
 
+Skladovni avtomat je definiran kot nabor sedmih elementov $M = (Q, \Sigma, \Gamma, \delta, q_0, Z, F)$, kjer so:
+
+- $Q$ - končna množica stanj
+- $\Sigma$ - končna množica simbolov, ki nam definira *vhodno abecedo*
+- $\Gamma$ - končna množica simbolov, ki nam definira *abecedo sklada*
+- $\delta$ - končna podmnožica $Q \times (\Sigma \cup \\{\epsilon\\}) \times \Gamma \times Q \times \Gamma^\*$, ki je množica relacij prehoda, pri čemer je $\epsilon$ prazen niz in $\Gamma^\*$ množica nizov končne dolžine nad abecedo $\Gamma$
+- $q_0 \in Q$ - začetno stanje
+- $Z \in \Gamma$ - začetni simbol sklada in
+- $F \subseteq Q$ - množica sprejemnih stanj
+
+Toda to je le ena izmed možnih implementacij skladovnega avtomata. Možne različice so še take, ki prehode namesto kot relacijo predstavijokot preslikavo; take, ki sklad predstavijo kot seznam, ... 
+
+### Primer
+
+Na primer, zgornji skladovni avtomat predstavimo z naborom $M = (Q, \Sigma, \Gamma, \delta, q_0, Z, F)$, kjer so:
+
+- **stanja:** $Q = \\{0\\}$
+- **vhodna abceda:** $\Sigma = \\{A-Z, a-z, ( ), (,), (.), (;), (:), (!), (?)\\}$, kjer $a-z$ pomeni vse male črke angleške abecede, $A-Z$ vse velike črke angleške abecede, $( )$ predstavlja presledek, vsi nadaljnji oklepaji pa predstavljajo simbole znotraj oklepajev (slednji služijo zgolj večji preglednosti)
+- **abeceda sklada:** $\Gamma = \Sigma$
+- **začetno stanje:** $q_0 = 0$
+- **začetni simbol sklada:** $Z = \epsilon$
+- **sprejemna stanja:** $F = 0$
+
+Prehodna relacija $\delta$ pa sestoji iz elementov:
+
 ### Viri
 - https://en.wikipedia.org/wiki/Pushdown_automaton#Turing_machines (definicija)
 - https://www.cs.odu.edu/~zeil/cs390/latest/Public/pda-jflap/index.html (ideja primera)
