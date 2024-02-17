@@ -7,6 +7,7 @@ type stanje_vmesnika =
   | BranjeNiza
   | RezultatPrebranegaNiza
   | OpozoriloONapacnemNizu
+  | VrniVIzhodiscnoStanje
 
 type model = {
   avtomat : Avtomat.t;
@@ -26,17 +27,27 @@ type msg = PreberiNiz of string | ZamenjajVmesnik of stanje_vmesnika
   niz |> String.to_seq |> Seq.fold_left aux (Some q) *)
 
 let update model = function
-  | PreberiNiz str -> (
-      match Avtomat.preberi_niz model.avtomat model.stanje_avtomata model.stanje_sklada str with
-      | None -> { model with stanje_vmesnika = OpozoriloONapacnemNizu }
-      | Some (stanje_avtomata, stanje_sklada) ->
+  | PreberiNiz str ->
+     (let seznam = Avtomat.preberi_niz model.avtomat model.stanje_avtomata model.stanje_sklada str in
+     let seznamcek = List.filter (fun (stanje', _) -> (je_sprejemno_stanje model.avtomat stanje')) seznam in
+      match (seznam, seznamcek) with
+      | [], _ -> { model with stanje_vmesnika = OpozoriloONapacnemNizu }
+      | ((stanje_avtomata, stanje_sklada) :: _, []) ->
           {
             model with
             stanje_avtomata;
             stanje_sklada;
             stanje_vmesnika = RezultatPrebranegaNiza;
+          }
+      | (_, (stanje_avtomata, stanje_sklada) :: _) -> 
+            {
+            model with
+            stanje_avtomata;
+            stanje_sklada;
+            stanje_vmesnika = RezultatPrebranegaNiza;
           })
-  | ZamenjajVmesnik stanje_vmesnika -> { model with stanje_vmesnika }
+  | ZamenjajVmesnik stanje_vmesnika -> if stanje_vmesnika = VrniVIzhodiscnoStanje then { avtomat = model.avtomat; stanje_avtomata = zacetno_stanje model.avtomat; stanje_sklada = zacetni_sklad model.avtomat; stanje_vmesnika }
+      else { model with stanje_vmesnika }
 
 let rec izpisi_moznosti () =
   print_endline "1) izpiši avtomat";
@@ -60,7 +71,7 @@ let izpisi_avtomat avtomat =
     in
     print_endline prikaz
   in
-  List.iter izpisi_stanje (seznam_stanj avtomat)
+  List.iter izpisi_stanje (List.rev (seznam_stanj avtomat))
 
 let beri_niz _model =
   print_string "Vnesi niz > ";
@@ -81,10 +92,12 @@ let view model =
   | BranjeNiza -> beri_niz model
   | RezultatPrebranegaNiza ->
       izpisi_rezultat model;
-      ZamenjajVmesnik SeznamMoznosti
+      ZamenjajVmesnik VrniVIzhodiscnoStanje
   | OpozoriloONapacnemNizu ->
       print_endline "Niz ni veljaven";
-      ZamenjajVmesnik SeznamMoznosti
+      ZamenjajVmesnik VrniVIzhodiscnoStanje
+  | VrniVIzhodiscnoStanje ->
+    ZamenjajVmesnik SeznamMoznosti
 
 let init avtomat =
   {
