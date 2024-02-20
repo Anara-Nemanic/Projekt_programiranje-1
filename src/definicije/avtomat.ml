@@ -98,6 +98,29 @@ let dpda_enako_stevilo_nicel_in_enk =
   |> dodaj_prehod q3 0 '1' q3 []
   |> dodaj_prazen_prehod q3 2 q4 [2;]
 
+  let palindromi =
+    let q0 = Stanje.iz_niza "q0"
+    and q1 = Stanje.iz_niza "q1"
+    and q2 = Stanje.iz_niza "q2"
+    and q3 = Stanje.iz_niza "q3" in
+    prazen_avtomat q0 (Sklad.nov_sklad 2)
+    |> dodaj_nesprejemno_stanje q1
+    |> dodaj_nesprejemno_stanje q2
+    |> dodaj_sprejemno_stanje q3
+    |> dodaj_prehod q0 2 '0' q1 [2; 0]
+    |> dodaj_prehod q0 2 '1' q1 [2; 1]
+    |> dodaj_prehod q1 0 '0' q1 [0; 0]
+    |> dodaj_prehod q1 0 '1' q1 [0; 1]
+    |> dodaj_prehod q1 1 '0' q1 [1; 0]
+    |> dodaj_prehod q1 1 '1' q1 [1; 1]
+    |> dodaj_prehod q1 0 '0' q2 []
+    |> dodaj_prehod q1 1 '1' q2 []
+    |> dodaj_prazen_prehod q1 0 q2 []
+    |> dodaj_prazen_prehod q1 1 q2 []
+    |> dodaj_prehod q2 0 '0' q2 []
+    |> dodaj_prehod q2 1 '1' q2 []
+    |> dodaj_prazen_prehod q2 2 q3 [2]
+
 let preberi_niz avtomat zacetno_stanje zacetni_sklad niz =
   let rec brez_znaka acc list =  
     match list with

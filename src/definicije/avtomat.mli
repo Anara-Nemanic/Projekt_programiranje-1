@@ -16,4 +16,5 @@ val zacetni_sklad : t -> Sklad.t
 val je_sprejemno_stanje : t -> Stanje.t -> bool
 val enke_1mod3 : t
 val dpda_enako_stevilo_nicel_in_enk : t
+val palindromi : t
 val preberi_niz : t -> Stanje.t -> Sklad.t -> string -> (Stanje.t * Sklad.t) list
