@@ -3,6 +3,7 @@ open Avtomat
 
 type stanje_vmesnika =
   | SeznamMoznosti
+  | OpisAvtomata
   | IzpisAvtomata
   | BranjeNiza
   | RezultatPrebranegaNiza
@@ -11,6 +12,7 @@ type stanje_vmesnika =
 
 type model = {
   avtomat : Avtomat.t;
+  opis : string;
   stanje_avtomata : Stanje.t;
   stanje_sklada : Sklad.t;
   stanje_vmesnika : stanje_vmesnika;
@@ -46,18 +48,25 @@ let update model = function
             stanje_sklada;
             stanje_vmesnika = RezultatPrebranegaNiza;
           })
-  | ZamenjajVmesnik stanje_vmesnika -> if stanje_vmesnika = VrniVIzhodiscnoStanje then { avtomat = model.avtomat; stanje_avtomata = zacetno_stanje model.avtomat; stanje_sklada = zacetni_sklad model.avtomat; stanje_vmesnika }
+  | ZamenjajVmesnik stanje_vmesnika -> if stanje_vmesnika = VrniVIzhodiscnoStanje then 
+    {avtomat = model.avtomat; 
+    opis = opis model.avtomat;
+    stanje_avtomata = zacetno_stanje model.avtomat; 
+    stanje_sklada = zacetni_sklad model.avtomat; 
+    stanje_vmesnika }
       else { model with stanje_vmesnika }
 
 let rec izpisi_moznosti () =
-  print_endline "1) izpiši avtomat";
-  print_endline "2) preberi niz";
+  print_endline "1) Opiši avtomat";
+  print_endline "2) Izpiši avtomat";
+  print_endline "3) Preberi niz";
   print_string "> ";
   match read_line () with
-  | "1" -> ZamenjajVmesnik IzpisAvtomata
-  | "2" -> ZamenjajVmesnik BranjeNiza
+  | "1" -> ZamenjajVmesnik OpisAvtomata
+  | "2" -> ZamenjajVmesnik IzpisAvtomata
+  | "3" -> ZamenjajVmesnik BranjeNiza
   | _ ->
-      print_endline "** VNESI 1 ALI 2 **";
+      print_endline "** VNESI 1, 2 ALI 3 **";
       izpisi_moznosti ()
 
 let izpisi_avtomat avtomat =
@@ -73,6 +82,9 @@ let izpisi_avtomat avtomat =
   in
   List.iter izpisi_stanje (List.rev (seznam_stanj avtomat))
 
+let opisi_avtomat model =
+  print_endline (model.opis)
+
 let beri_niz _model =
   print_string "Vnesi niz > ";
   let str = read_line () in
@@ -86,6 +98,9 @@ let izpisi_rezultat model =
 let view model =
   match model.stanje_vmesnika with
   | SeznamMoznosti -> izpisi_moznosti ()
+  | OpisAvtomata -> 
+      opisi_avtomat model;
+      ZamenjajVmesnik SeznamMoznosti
   | IzpisAvtomata ->
       izpisi_avtomat model.avtomat;
       ZamenjajVmesnik SeznamMoznosti
@@ -102,6 +117,7 @@ let view model =
 let init avtomat =
   {
     avtomat;
+    opis = opis avtomat;
     stanje_avtomata = zacetno_stanje avtomat;
     stanje_sklada = sklad avtomat;
     stanje_vmesnika = SeznamMoznosti;
@@ -112,4 +128,4 @@ let rec loop model =
   let model' = update model msg in
   loop model'
 
-let _ = loop (init palindromi)
+let _ = loop (init dpda_enako_stevilo_nicel_in_enk)

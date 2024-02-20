@@ -3,6 +3,7 @@ type sklad = Sklad.t
 
 type t = {
   stanja : stanje list;
+  opis : string;
   zacetno_stanje : stanje;
   sprejemna_stanja : stanje list;
   prehodi : ( stanje * int * char * stanje * int list ) list;
@@ -14,6 +15,7 @@ type t = {
 let prazen_avtomat zacetno_stanje sklad =
   {
     stanja = [ zacetno_stanje ];
+    opis = "Ni opisa";
     zacetno_stanje;
     sprejemna_stanja = [];
     prehodi = [];
@@ -21,6 +23,9 @@ let prazen_avtomat zacetno_stanje sklad =
     sklad = sklad;
     zacetni_sklad = sklad;
   }
+
+let dodaj_opis opis avtomat = 
+  { avtomat with opis = opis}
 
 let dodaj_nesprejemno_stanje stanje avtomat =
   { avtomat with stanja = stanje :: avtomat.stanja }
@@ -61,6 +66,7 @@ let prazna_prehodna_funkcija avtomat (stanje, sklad) =
   )
 
 let zacetno_stanje avtomat = avtomat.zacetno_stanje
+let opis avtomat = avtomat.opis
 let seznam_stanj avtomat = avtomat.stanja
 let seznam_prehodov avtomat = avtomat.prehodi
 let seznam_praznih_prehodov avtomat = avtomat.prazni_prehodi
@@ -104,6 +110,8 @@ let dpda_enako_stevilo_nicel_in_enk =
     and q2 = Stanje.iz_niza "q2"
     and q3 = Stanje.iz_niza "q3" in
     prazen_avtomat q0 (Sklad.nov_sklad 2)
+    |> dodaj_opis "Avtomat je narejen za iskanje palindromov iz znakov 0 in 1. 
+    Vpiši niz iz ničel in enic in avtomat bo preveril ali se tvoj niz prebere enako z leve in desne."
     |> dodaj_nesprejemno_stanje q1
     |> dodaj_nesprejemno_stanje q2
     |> dodaj_sprejemno_stanje q3

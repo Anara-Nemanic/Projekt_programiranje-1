@@ -7,6 +7,7 @@ val dodaj_prehod : Stanje.t -> int -> char -> Stanje.t -> int list -> t -> t
 val dodaj_prazen_prehod : Stanje.t -> int -> Stanje.t -> int list -> t -> t
 val prehodna_funkcija : t -> char -> (Stanje.t * Sklad.t) -> (Stanje.t * Sklad.t) list
 val prazna_prehodna_funkcija : t -> (Stanje.t * Sklad.t) -> (Stanje.t * Sklad.t) list
+val opis : t -> string
 val zacetno_stanje : t -> Stanje.t
 val seznam_stanj : t -> Stanje.t list
 val seznam_prehodov : t -> (Stanje.t * int * char * Stanje.t * int list ) list
