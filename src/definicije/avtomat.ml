@@ -25,7 +25,7 @@ let prazen_avtomat zacetno_stanje sklad =
   }
 
 let dodaj_opis opis avtomat = 
-  { avtomat with opis = opis}
+  { avtomat with opis = opis }
 
 let dodaj_nesprejemno_stanje stanje avtomat =
   { avtomat with stanja = stanje :: avtomat.stanja }
@@ -76,6 +76,42 @@ let zacetni_sklad avtomat = avtomat.zacetni_sklad
 let je_sprejemno_stanje avtomat stanje =
   List.mem stanje avtomat.sprejemna_stanja
 
+let preberi_niz avtomat zacetno_stanje zacetni_sklad niz =
+  let rec brez_znaka acc list =  
+    match list with
+      | [] -> acc
+      | sez -> brez_znaka (acc @ list) (List.flatten (List.map (prazna_prehodna_funkcija avtomat) sez)) in
+  let z_znakom seznam znak = 
+    List.flatten (List.map (prehodna_funkcija avtomat znak) (brez_znaka [] seznam)) in
+  brez_znaka [] (niz |> String.to_seq |> Seq.fold_left z_znakom [(zacetno_stanje, zacetni_sklad)])
+
+let palindromi =
+  let q0 = Stanje.iz_niza "q0"
+  and q1 = Stanje.iz_niza "q1"
+  and q2 = Stanje.iz_niza "q2"
+  and q3 = Stanje.iz_niza "q3" in
+  prazen_avtomat q0 (Sklad.nov_sklad 2)
+  |> dodaj_opis "Avtomat je narejen za iskanje palindromov iz znakov 0 in 1. 
+Vpiši niz iz ničel in enic in avtomat bo preveril ali se tvoj niz prebere enako z leve in desne."
+  |> dodaj_nesprejemno_stanje q1
+  |> dodaj_nesprejemno_stanje q2
+  |> dodaj_sprejemno_stanje q3
+  |> dodaj_prehod q0 2 '0' q1 [2; 0]
+  |> dodaj_prehod q0 2 '1' q1 [2; 1]
+  |> dodaj_prehod q1 0 '0' q1 [0; 0]
+  |> dodaj_prehod q1 0 '1' q1 [0; 1]
+  |> dodaj_prehod q1 1 '0' q1 [1; 0]
+  |> dodaj_prehod q1 1 '1' q1 [1; 1]
+  |> dodaj_prehod q1 0 '0' q2 []
+  |> dodaj_prehod q1 1 '1' q2 []
+  |> dodaj_prazen_prehod q1 0 q2 []
+  |> dodaj_prazen_prehod q1 1 q2 []
+  |> dodaj_prehod q2 0 '0' q2 []
+  |> dodaj_prehod q2 1 '1' q2 []
+  |> dodaj_prazen_prehod q2 2 q3 [2]
+
+  (*Še dva primera
+     Prvi je končni avtomat, drugi pa deterministični skladovni avtomat*)
 let enke_1mod3 =
   let q0 = Stanje.iz_niza "q0"
   and q1 = Stanje.iz_niza "q1"
@@ -89,6 +125,7 @@ let enke_1mod3 =
   |> dodaj_prehod q0 2 '1' q1 [2]
   |> dodaj_prehod q1 2 '1' q2 [2]
   |> dodaj_prehod q2 2 '1' q0 [2]
+
 let dpda_enako_stevilo_nicel_in_enk =
   let q1 = Stanje.iz_niza "q1"
   and q2 = Stanje.iz_niza "q2"
@@ -103,37 +140,3 @@ let dpda_enako_stevilo_nicel_in_enk =
   |> dodaj_prehod q2 0 '1' q3 []
   |> dodaj_prehod q3 0 '1' q3 []
   |> dodaj_prazen_prehod q3 2 q4 [2;]
-
-  let palindromi =
-    let q0 = Stanje.iz_niza "q0"
-    and q1 = Stanje.iz_niza "q1"
-    and q2 = Stanje.iz_niza "q2"
-    and q3 = Stanje.iz_niza "q3" in
-    prazen_avtomat q0 (Sklad.nov_sklad 2)
-    |> dodaj_opis "Avtomat je narejen za iskanje palindromov iz znakov 0 in 1. 
-Vpiši niz iz ničel in enic in avtomat bo preveril ali se tvoj niz prebere enako z leve in desne."
-    |> dodaj_nesprejemno_stanje q1
-    |> dodaj_nesprejemno_stanje q2
-    |> dodaj_sprejemno_stanje q3
-    |> dodaj_prehod q0 2 '0' q1 [2; 0]
-    |> dodaj_prehod q0 2 '1' q1 [2; 1]
-    |> dodaj_prehod q1 0 '0' q1 [0; 0]
-    |> dodaj_prehod q1 0 '1' q1 [0; 1]
-    |> dodaj_prehod q1 1 '0' q1 [1; 0]
-    |> dodaj_prehod q1 1 '1' q1 [1; 1]
-    |> dodaj_prehod q1 0 '0' q2 []
-    |> dodaj_prehod q1 1 '1' q2 []
-    |> dodaj_prazen_prehod q1 0 q2 []
-    |> dodaj_prazen_prehod q1 1 q2 []
-    |> dodaj_prehod q2 0 '0' q2 []
-    |> dodaj_prehod q2 1 '1' q2 []
-    |> dodaj_prazen_prehod q2 2 q3 [2]
-
-let preberi_niz avtomat zacetno_stanje zacetni_sklad niz =
-  let rec brez_znaka acc list =  
-    match list with
-      | [] -> acc
-      | sez -> brez_znaka (acc @ list) (List.flatten (List.map (prazna_prehodna_funkcija avtomat) sez)) in
-  let z_znakom seznam znak = 
-    List.flatten (List.map (prehodna_funkcija avtomat znak) (brez_znaka [] seznam)) in
-  brez_znaka [] (niz |> String.to_seq |> Seq.fold_left z_znakom [(zacetno_stanje, zacetni_sklad)])
