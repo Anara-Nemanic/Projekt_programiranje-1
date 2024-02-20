@@ -112,4 +112,6 @@ let rec loop model =
   let model' = update model msg in
   loop model'
 
+let a = 3
+
 let _ = loop (init dpda_enako_stevilo_nicel_in_enk)
