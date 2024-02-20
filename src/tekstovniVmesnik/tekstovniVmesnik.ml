@@ -70,6 +70,7 @@ let rec izpisi_moznosti () =
       izpisi_moznosti ()
 
 let izpisi_avtomat avtomat =
+  print_endline "";
   let izpisi_stanje stanje =
     let prikaz = Stanje.v_niz stanje in
     let prikaz =
@@ -80,10 +81,13 @@ let izpisi_avtomat avtomat =
     in
     print_endline prikaz
   in
-  List.iter izpisi_stanje (List.rev (seznam_stanj avtomat))
+  List.iter izpisi_stanje (List.rev (seznam_stanj avtomat));
+  print_endline ""
 
 let opisi_avtomat model =
-  print_endline (model.opis)
+  print_endline "";
+  print_endline (model.opis);
+  print_endline ""
 
 let beri_niz _model =
   print_string "Vnesi niz > ";
@@ -92,8 +96,12 @@ let beri_niz _model =
 
 let izpisi_rezultat model =
   if je_sprejemno_stanje model.avtomat model.stanje_avtomata then
-    print_endline "Niz je bil sprejet"
-  else print_endline "Niz ni bil sprejet"
+    (print_endline "";
+    print_endline "Niz je bil sprejet";
+    print_endline "")
+  else (print_endline "";
+  print_endline "Niz ni bil sprejet";
+  print_endline "")
 
 let view model =
   match model.stanje_vmesnika with
@@ -128,4 +136,4 @@ let rec loop model =
   let model' = update model msg in
   loop model'
 
-let _ = loop (init dpda_enako_stevilo_nicel_in_enk)
+let _ = loop (init palindromi)

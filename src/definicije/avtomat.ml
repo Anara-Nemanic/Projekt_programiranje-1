@@ -111,7 +111,7 @@ let dpda_enako_stevilo_nicel_in_enk =
     and q3 = Stanje.iz_niza "q3" in
     prazen_avtomat q0 (Sklad.nov_sklad 2)
     |> dodaj_opis "Avtomat je narejen za iskanje palindromov iz znakov 0 in 1. 
-    Vpiši niz iz ničel in enic in avtomat bo preveril ali se tvoj niz prebere enako z leve in desne."
+Vpiši niz iz ničel in enic in avtomat bo preveril ali se tvoj niz prebere enako z leve in desne."
     |> dodaj_nesprejemno_stanje q1
     |> dodaj_nesprejemno_stanje q2
     |> dodaj_sprejemno_stanje q3
