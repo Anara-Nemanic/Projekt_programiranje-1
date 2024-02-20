@@ -14,9 +14,26 @@ Končni avtomat začne v enem izmed možnih stanj, nato pa glede na trenutno sta
 
 ### Primer
 
-Delala bom na primeru iskanja palindromov s skladovnim avtomatom. Palindróm je beseda, fraza, število ali katerokoli drugo zaporedje enot, ki imajo to lastnost, da se berejo z obeh strani enako. Osredotočila se bom na palindrome sestavljene iz ničel in enic. Moj avtomat torej sprejema nize, sestavljene iz znakov $0$ in $1$, ki se berejo enako tako z leve kot desne strani. Tak avtomat predstavimo z naslednjim diagramom, na katerem je začetno stanje označeno s puščico, sprejemna stanja pa so dvojno obkrožena:
+Delala bom na primeru iskanja palindromov s skladovnim avtomatom. Palindróm je beseda, fraza, število ali katerokoli drugo zaporedje enot, ki imajo to lastnost, da se berejo z obeh strani enako. Osredotočila se bom na palindrome sestavljene iz ničel in enic. Moj avtomat torej sprejema nize, sestavljene iz znakov $0$ in $1$, ki se berejo enako tako z leve kot desne strani. Tak avtomat predstavimo z naslednjim diagramom:
 
-DIAGRAM AVTOMATA - TODO
+DIAGRAM AVTOMATA:
+
+```mermaid
+graph LR;
+    A(Začetno stanje) -- 0, 2 -> 20 --> B(Nalagam na sklad);
+    A -- 1, 2 -> 21 --> B;
+    B -- 0, 0 -> 00 --> B;
+    B -- 1, 0 -> 01 --> B;
+    B -- 0, 1 -> 10 --> B;
+    B -- 1, 1 -> 11 --> B;
+    B -- /, 0 -> / --> C(Vzemam iz sklada);
+    B -- 0, 0 -> / --> C;
+    B -- 1, 1 -> / --> C;
+    B -- /, 1 -> / --> C;
+    C -- 0, 0 -> / --> C;
+    C -- 1, 1 -> / --> C; 
+    C -- /, 2 -> 2 --> D(Končno stanje)
+```
 
 ## Matematična definicija
 
@@ -35,14 +52,15 @@ Skladovni avtomat je definiran kot nabor sedmih elementov $M = (Q, \Sigma, \Gamm
 
 Zgoraj opisani primer nedeterminističnega skladovnega avtomata predstavimo z naborom $M = (Q, \Sigma, \Gamma, \delta, q_0, Z, F)$, kjer so:
 
-- **stanja:** $Q = \\{q_0, q_1, q_2\\}$
+- **stanja:** $Q = \\{q_0, q_1, q_2, q_3\\}$
 - **vhodna abceda:** $\Sigma = \\{0, 1\\}$
 - **abeceda sklada:** $\Gamma = \\{0, 1, 2\\}$
 - **začetno stanje:** $q_0 = q_0$
 - **začetni simbol sklada:** $\lambda = 2$
-- **sprejemna stanja:** $F = q_2$
-
-Prehodna relacija $\delta$ pa sestoji iz elementov:
+- **sprejemna stanja:** $F = q_3$
+- **Prehodna relacija:** $\delta = \\{(q_0, 2, 0, q_1, 20); (q_0, 2, 1, q_1, 21); (q1, 0, 0, q_1, 00); (q_1, 0, 1, q_1, 01); (q_1, 1, 0, q_1, 10); (q_1, 1, 1, q_1, 11);$
+  
+  $(q_1, 0, 0, q_2, \epsilon); (q_1, 1, 1, q_2, \epsilon); (q_1, 0, \epsilon, q_2, \epsilon); (q_1, 1, \epsilon, q_2, \epsilon); (q_2, 0, 0, q_2, \epsilon); (q_2, 1, 1, q_2, \epsilon) (q_2, 2, \epsilon, q_3, 2)\\}$
 
 ## Navodila za uporabo
 
