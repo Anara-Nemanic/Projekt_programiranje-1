@@ -58,7 +58,9 @@ let rec izpisi_moznosti () =
   | "2" -> ZamenjajVmesnik IzpisAvtomata
   | "3" -> ZamenjajVmesnik BranjeNiza
   | _ ->
-      print_endline "** VNESI 1, 2 ALI 3 **";
+    (print_endline "";
+    print_endline "** VNESI 1, 2 ALI 3 **";
+    print_endline "");
       izpisi_moznosti ()
 
 let izpisi_avtomat avtomat =
@@ -109,7 +111,9 @@ let view model =
       izpisi_rezultat model;
       ZamenjajVmesnik VrniVIzhodiscnoStanje
   | OpozoriloONapacnemNizu ->
-      print_endline "Niz ni veljaven";
+    (print_endline "";
+    print_endline "Niz ni veljaven";
+    print_endline "");
       ZamenjajVmesnik VrniVIzhodiscnoStanje
   | VrniVIzhodiscnoStanje ->
     ZamenjajVmesnik SeznamMoznosti
