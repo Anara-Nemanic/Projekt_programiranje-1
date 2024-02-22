@@ -1,7 +1,7 @@
 type t = { niz : string; indeks_trenutnega_znaka : int }
 
-let trenutni_znak trak = String.get trak.niz trak.indeks_trenutnega_znaka
-let je_na_koncu trak = String.length trak.niz = trak.indeks_trenutnega_znaka
+let trenutno_na_traku trak = String.get trak.niz trak.indeks_trenutnega_znaka
+let na_koncu trak = String.length trak.niz = trak.indeks_trenutnega_znaka
 
 let premakni_naprej trak =
   { trak with indeks_trenutnega_znaka = succ trak.indeks_trenutnega_znaka }

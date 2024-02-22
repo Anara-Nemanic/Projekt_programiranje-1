@@ -84,7 +84,8 @@ let opisi_avtomat model =
   print_endline ""
 
 let beri_niz _model =
-  print_string "Vnesi niz > ";
+  (print_endline "";
+    print_string "Vnesi niz > ");
   let str = read_line () in
   PreberiNiz str
 

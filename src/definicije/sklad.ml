@@ -1,18 +1,21 @@
-type t = Prazen | Sestavljen of int * t
+type t = 
+  | Prazen 
+  | Sestavljen of int * t
 
-let nov_sklad stevilo = Sestavljen (stevilo, Prazen)
-let trenutni_znak = function
+let ustvari_sklad stevilo = Sestavljen (stevilo, Prazen)
+
+let trenutno_na_skladu = function
   | Prazen -> None
-  | Sestavljen (znak, _) -> Some znak
+  | Sestavljen (stevilo, _) -> Some stevilo
 
-let je_na_koncu sklad = (sklad = Prazen)
-
-let pop = function
-  | Prazen -> None
-  | Sestavljen (_, sklad) -> Some sklad
-
-let push sklad vnos = Sestavljen (vnos, sklad)
+let push sklad stevilo = Sestavljen (stevilo, sklad)
 
 let zamenjaj_na_skladu sez = function
-  | Prazen -> Prazen (* ne bo nikoli prazen, torej je vseeno *)
+  | Prazen -> Prazen (* nikoli ne bo prazen *)
   | Sestavljen (_, sklad) -> List.fold_left push sklad sez 
+
+(* let pop = function
+  | Prazen -> None
+  | Sestavljen (_, sklad) -> Some sklad *)
+
+(* let na_koncu sklad = (sklad = Prazen) *)

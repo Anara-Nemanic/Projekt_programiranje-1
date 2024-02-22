@@ -44,7 +44,7 @@ let dodaj_prazen_prehod stanje1 znak_na_skladu1 stanje2 (znaki_na_skladu2 : int 
   { avtomat with prazni_prehodi = (stanje1, znak_na_skladu1, stanje2, znaki_na_skladu2) :: avtomat.prazni_prehodi }
 
 let prehodna_funkcija avtomat znak (stanje, sklad) =
-  let znak_na_skladu = Option.get (Sklad.trenutni_znak sklad) in
+  let znak_na_skladu = Option.get (Sklad.trenutno_na_skladu sklad) in
   let rec pomozna acc = function
   | [] -> acc
   | (_, _, _, novo_stanje, novi_del_sklada) :: rep -> pomozna ((novo_stanje, Sklad.zamenjaj_na_skladu novi_del_sklada sklad) :: acc) rep in
@@ -55,7 +55,7 @@ let prehodna_funkcija avtomat znak (stanje, sklad) =
   )
 
 let prazna_prehodna_funkcija avtomat (stanje, sklad) =
-  let znak_na_skladu = Option.get (Sklad.trenutni_znak sklad) in
+  let znak_na_skladu = Option.get (Sklad.trenutno_na_skladu sklad) in
   let rec pomozna acc = function
   | [] -> acc
   | (_, _, novo_stanje, novi_del_sklada) :: rep -> pomozna ((novo_stanje, Sklad.zamenjaj_na_skladu novi_del_sklada sklad) :: acc) rep in
@@ -90,7 +90,7 @@ let palindromi =
   and q1 = Stanje.iz_niza "q1"
   and q2 = Stanje.iz_niza "q2"
   and q3 = Stanje.iz_niza "q3" in
-  prazen_avtomat q0 (Sklad.nov_sklad 2)
+  prazen_avtomat q0 (Sklad.ustvari_sklad 2)
   |> dodaj_opis "Avtomat je narejen za iskanje palindromov iz znakov 0 in 1. 
 Vpiši niz iz ničel in enic in avtomat bo preveril ali se tvoj niz prebere enako z leve in desne."
   |> dodaj_nesprejemno_stanje q1
@@ -116,7 +116,7 @@ let enke_1mod3 =
   let q0 = Stanje.iz_niza "q0"
   and q1 = Stanje.iz_niza "q1"
   and q2 = Stanje.iz_niza "q2" in
-  prazen_avtomat q0 (Sklad.nov_sklad 2)
+  prazen_avtomat q0 (Sklad.ustvari_sklad 2)
   |> dodaj_sprejemno_stanje q1
   |> dodaj_nesprejemno_stanje q2
   |> dodaj_prehod q0 2 '0' q0 [2]
@@ -131,7 +131,7 @@ let dpda_enako_stevilo_nicel_in_enk =
   and q2 = Stanje.iz_niza "q2"
   and q3 = Stanje.iz_niza "q3" 
   and q4 = Stanje.iz_niza "q4" in
-  prazen_avtomat q1 (Sklad.nov_sklad 2)
+  prazen_avtomat q1 (Sklad.ustvari_sklad 2)
   |> dodaj_nesprejemno_stanje q2
   |> dodaj_nesprejemno_stanje q3
   |> dodaj_sprejemno_stanje q4
