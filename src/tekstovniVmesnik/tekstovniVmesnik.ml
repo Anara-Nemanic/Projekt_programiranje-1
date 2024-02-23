@@ -65,6 +65,9 @@ let rec izpisi_moznosti () =
 
 let izpisi_avtomat avtomat =
   print_endline "";
+  print_string "S puščico je označeno začetno, s plusom pa sprejemno stanje avtomata:";
+  print_endline "";
+  print_endline "";
   let izpisi_stanje stanje =
     let prikaz = Stanje.v_niz stanje in
     let prikaz =

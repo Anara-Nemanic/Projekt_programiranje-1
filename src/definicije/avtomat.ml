@@ -91,8 +91,8 @@ let palindromi =
   and q2 = Stanje.iz_niza "q2"
   and q3 = Stanje.iz_niza "q3" in
   prazen_avtomat q0 (Sklad.ustvari_sklad 'A')
-  |> dodaj_opis "Avtomat je narejen za iskanje palindromov iz znakov 0 in 1. 
-Vpiši niz iz ničel in enic in avtomat bo preveril ali se tvoj niz prebere enako z leve in desne."
+  |> dodaj_opis "Avtomat je narejen za iskanje palindromov iz črk e, n in z. 
+Vpiši niz iz teh črk in avtomat bo preveril, ali se tvoja beseda prebere enako z leve in desne."
   |> dodaj_nesprejemno_stanje q1
   |> dodaj_nesprejemno_stanje q2
   |> dodaj_sprejemno_stanje q3
