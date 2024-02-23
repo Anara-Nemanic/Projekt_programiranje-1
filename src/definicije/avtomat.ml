@@ -6,8 +6,8 @@ type t = {
   opis : string;
   zacetno_stanje : stanje;
   sprejemna_stanja : stanje list;
-  prehodi : ( stanje * int * char * stanje * int list ) list;
-  prazni_prehodi : ( stanje * int * stanje * int list ) list;
+  prehodi : ( stanje * char * char * stanje * char list ) list;
+  prazni_prehodi : ( stanje * char * stanje * char list ) list;
   sklad : sklad;
   zacetni_sklad: sklad;
 }
@@ -37,10 +37,10 @@ let dodaj_sprejemno_stanje stanje avtomat =
     sprejemna_stanja = stanje :: avtomat.sprejemna_stanja;
   }
 
-let dodaj_prehod stanje1 znak_na_skladu1 znak stanje2 (znaki_na_skladu2 : int list) avtomat =
+let dodaj_prehod stanje1 znak_na_skladu1 znak stanje2 (znaki_na_skladu2 : char list) avtomat =
   { avtomat with prehodi = (stanje1, znak_na_skladu1, znak, stanje2, znaki_na_skladu2) :: avtomat.prehodi }
 
-let dodaj_prazen_prehod stanje1 znak_na_skladu1 stanje2 (znaki_na_skladu2 : int list) avtomat =
+let dodaj_prazen_prehod stanje1 znak_na_skladu1 stanje2 (znaki_na_skladu2 : char list) avtomat =
   { avtomat with prazni_prehodi = (stanje1, znak_na_skladu1, stanje2, znaki_na_skladu2) :: avtomat.prazni_prehodi }
 
 let prehodna_funkcija avtomat znak (stanje, sklad) =
@@ -90,29 +90,42 @@ let palindromi =
   and q1 = Stanje.iz_niza "q1"
   and q2 = Stanje.iz_niza "q2"
   and q3 = Stanje.iz_niza "q3" in
-  prazen_avtomat q0 (Sklad.ustvari_sklad 2)
+  prazen_avtomat q0 (Sklad.ustvari_sklad 'A')
   |> dodaj_opis "Avtomat je narejen za iskanje palindromov iz znakov 0 in 1. 
 Vpiši niz iz ničel in enic in avtomat bo preveril ali se tvoj niz prebere enako z leve in desne."
   |> dodaj_nesprejemno_stanje q1
   |> dodaj_nesprejemno_stanje q2
   |> dodaj_sprejemno_stanje q3
-  |> dodaj_prehod q0 2 '0' q1 [2; 0]
-  |> dodaj_prehod q0 2 '1' q1 [2; 1]
-  |> dodaj_prehod q1 0 '0' q1 [0; 0]
-  |> dodaj_prehod q1 0 '1' q1 [0; 1]
-  |> dodaj_prehod q1 1 '0' q1 [1; 0]
-  |> dodaj_prehod q1 1 '1' q1 [1; 1]
-  |> dodaj_prehod q1 0 '0' q2 []
-  |> dodaj_prehod q1 1 '1' q2 []
-  |> dodaj_prazen_prehod q1 0 q2 []
-  |> dodaj_prazen_prehod q1 1 q2 []
-  |> dodaj_prehod q2 0 '0' q2 []
-  |> dodaj_prehod q2 1 '1' q2 []
-  |> dodaj_prazen_prehod q2 2 q3 [2]
+  |> dodaj_prehod q0 'A' 'e' q1 ['A'; 'e']
+  |> dodaj_prehod q0 'A' 'n' q1 ['A'; 'n']
+  |> dodaj_prehod q0 'A' 'z' q1 ['A'; 'z'] 
+
+  |> dodaj_prehod q1 'e' 'e' q1 ['e'; 'e']
+  |> dodaj_prehod q1 'e' 'n' q1 ['e'; 'n']
+  |> dodaj_prehod q1 'e' 'z' q1 ['e'; 'z']
+  |> dodaj_prehod q1 'n' 'e' q1 ['n'; 'e']
+  |> dodaj_prehod q1 'n' 'n' q1 ['n'; 'n']
+  |> dodaj_prehod q1 'n' 'z' q1 ['n'; 'z']
+  |> dodaj_prehod q1 'z' 'e' q1 ['z'; 'e']
+  |> dodaj_prehod q1 'z' 'n' q1 ['z'; 'n']
+  |> dodaj_prehod q1 'z' 'z' q1 ['z'; 'z']
+
+  |> dodaj_prehod q1 'e' 'e' q2 []
+  |> dodaj_prehod q1 'n' 'n' q2 []
+  |> dodaj_prehod q1 'z' 'z' q2 []
+  |> dodaj_prazen_prehod q1 'e' q2 []
+  |> dodaj_prazen_prehod q1 'n' q2 []
+  |> dodaj_prazen_prehod q1 'z' q2 []
+
+  |> dodaj_prehod q2 'e' 'e' q2 []
+  |> dodaj_prehod q2 'n' 'n' q2 []
+  |> dodaj_prehod q2 'z' 'z' q2 []
+
+  |> dodaj_prazen_prehod q2 'A' q3 ['A']
 
   (*Še dva primera
      Prvi je končni avtomat, drugi pa deterministični skladovni avtomat*)
-let enke_1mod3 =
+(* let enke_1mod3 =
   let q0 = Stanje.iz_niza "q0"
   and q1 = Stanje.iz_niza "q1"
   and q2 = Stanje.iz_niza "q2" in
@@ -139,4 +152,4 @@ let dpda_enako_stevilo_nicel_in_enk =
   |> dodaj_prehod q2 0 '0' q2 [0; 0]
   |> dodaj_prehod q2 0 '1' q3 []
   |> dodaj_prehod q3 0 '1' q3 []
-  |> dodaj_prazen_prehod q3 2 q4 [2;]
+  |> dodaj_prazen_prehod q3 2 q4 [2;] *)
