@@ -6,7 +6,7 @@ Skladovni avtomat deluje tako, da prebere dani vhodni niz od leve proti desni. V
 
 ### Kako se skladovni avtomati razlikujejo od končnih?
 
-Končni avtomat začne v enem izmed možnih stanj, nato pa glede na trenutno stanje in trenutni simbol preide v neko novo stanje. Če ob pregledu celotnega niza konča v enem od sprejemnih stanj, je niz sprejet, sicer pa ni. Torej končni avtomat samo gleda na vhodni signal in trenutno stanje: nima sklada, s katerim bi delal, in zato ne more dostopati do prejšnjih vrednosti vhoda. Izbere lahko le novo stanje, ki je posledica sledenja prehodu. Nedeterministični skladovni avtomat pa se razlikuje od končnega avtomata na tri načine:
+Končni avtomat začne v enem izmed možnih stanj, nato pa glede na trenutno stanje in trenutni simbol preide v neko novo stanje. Če ob pregledu celotnega niza konča v enem od sprejemnih stanj, je niz sprejet, sicer pa ni. Končni avtomat gleda samo na vhodni signal in trenutno stanje in nima sklada, s katerim bi delal, ter zato ne more dostopati do prejšnjih vrednosti vhoda. Izbere lahko le novo stanje, ki je posledica sledenja prehodu. Nedeterministični skladovni avtomat pa se razlikuje od končnega avtomata na tri načine:
 
   1. Uporabi lahko vrh sklada, pri odločanju, kateri prehod naj izvede.
   2. Lahko manipulira s skladom kot del izvajanja prehoda.
@@ -14,25 +14,39 @@ Končni avtomat začne v enem izmed možnih stanj, nato pa glede na trenutno sta
 
 ### Primer
 
-Delala bom na primeru iskanja palindromov s skladovnim avtomatom. Palindróm je beseda, fraza, število ali katerokoli drugo zaporedje enot, ki imajo to lastnost, da se berejo z obeh strani enako. Osredotočila se bom na palindrome sestavljene iz ničel in enic. Moj avtomat torej sprejema nize, sestavljene iz znakov $0$ in $1$, ki se berejo enako tako z leve kot desne strani. Tak avtomat predstavimo z naslednjim diagramom:
+Delala bom na primeru iskanja palindromov s skladovnim avtomatom. Palindróm je beseda, fraza, število ali katerokoli drugo zaporedje enot, ki imajo to lastnost, da se berejo z obeh strani enako. Osredotočila se bom na palindrome sestavljene iz črk 'e', 'n' in 'z', ki tvorijo palindrom *"nezen"*, kar je verzija besede *"nežen,"* brez šumnikov;). Moj avtomat torej sprejema nize, sestavljene iz znakov 'e', 'n' in 'z', ki se berejo enako tako z leve kot desne strani. Tak avtomat predstavimo z naslednjim diagramom:
 
 DIAGRAM AVTOMATA:
 
 ```mermaid
 graph LR;
-    A(Začetno stanje) -- 0, 2 -> 20 --> B(Nalagam na sklad);
-    A -- 1, 2 -> 21 --> B;
-    B -- 0, 0 -> 00 --> B;
-    B -- 1, 0 -> 01 --> B;
-    B -- 0, 1 -> 10 --> B;
-    B -- 1, 1 -> 11 --> B;
-    B -- /, 0 -> / --> C(Vzemam iz sklada);
-    B -- 0, 0 -> / --> C;
-    B -- 1, 1 -> / --> C;
-    B -- /, 1 -> / --> C;
-    C -- 0, 0 -> / --> C;
-    C -- 1, 1 -> / --> C; 
-    C -- /, 2 -> 2 --> D(Končno stanje)
+    A(Začetno stanje) -- e, A -> Ae --> B(Nalagam na sklad);
+    A -- n, A -> An --> B;
+    A -- z, A -> An --> B;
+
+    B -- e, e -> ee --> B;
+    B -- n, e -> en --> B;
+    B -- z, e -> ez --> B;
+    B -- e, n -> ne --> B;
+    B -- n, n -> nn --> B;
+    B -- z, n -> nz --> B;
+    B -- e, z -> ze --> B;
+    B -- n, z -> zn --> B;
+    B -- z, z -> zz --> B;
+
+    B -- /, e -> / --> C(Vzemam iz sklada);
+    B -- e, e -> / --> C;
+    B -- /, n -> / --> C;
+    B -- n, n -> / --> C;
+    B -- /, z -> / --> C;
+    B -- z, z -> / --> C;
+   
+
+    C -- e, e -> / --> C;
+    C -- n, n -> / --> C;
+    C -- z, z -> / --> C;
+
+    C -- /, A -> A --> D(Končno stanje)
 ```
 
 ## Matematična definicija
@@ -53,14 +67,37 @@ Skladovni avtomat je definiran kot nabor sedmih elementov $M = (Q, \Sigma, \Gamm
 Zgoraj opisani primer nedeterminističnega skladovnega avtomata predstavimo z naborom $M = (Q, \Sigma, \Gamma, \delta, q_0, Z, F)$, kjer so:
 
 - **stanja:** $Q = \\{q_0, q_1, q_2, q_3\\}$
-- **vhodna abceda:** $\Sigma = \\{0, 1\\}$
-- **abeceda sklada:** $\Gamma = \\{0, 1, 2\\}$
+- **vhodna abceda:** $\Sigma = \\{e, n, z\\}$
+- **abeceda sklada:** $\Gamma = \\{A, e, n, z\\}$
 - **začetno stanje:** $q_0 = q_0$
-- **začetni simbol sklada:** $\lambda = 2$
+- **začetni simbol sklada:** $\lambda = A$
 - **sprejemna stanja:** $F = q_3$
-- **Prehodna relacija:** $\delta = \\{(q_0, 2, 0, q_1, 20); (q_0, 2, 1, q_1, 21); (q1, 0, 0, q_1, 00); (q_1, 0, 1, q_1, 01); (q_1, 1, 0, q_1, 10); (q_1, 1, 1, q_1, 11);$
+- **Prehodna relacija:** $\delta = \\{
+  (q_0, A, e, q_1, Ae),
+  (q_0, A, n, q_1, An),
+  (q_0, A, z, q_1, Az), 
+  (q_1, e, e, q_1, ee),
+  (q_1, e, n, q_1, en),
+  (q_1, e, z, q_1, ez),
+  (q_1, n, e, q_1, ne),
+  (q_1, n, n, q_1, nn),$
+
   
-  $(q_1, 0, 0, q_2, \epsilon); (q_1, 1, 1, q_2, \epsilon); (q_1, 0, \epsilon, q_2, \epsilon); (q_1, 1, \epsilon, q_2, \epsilon); (q_2, 0, 0, q_2, \epsilon); (q_2, 1, 1, q_2, \epsilon) (q_2, 2, \epsilon, q_3, 2)\\}$
+  $(q_1, n, z, q_1, nz),
+  (q_1, z, e, q_1, ze),
+  (q_1, z, n, q_1, zn),
+  (q_1, z, z, q_1, zz),
+  (q_1, e, e, q_2, \epsilon),
+  (q_1, n, n, q_2, \epsilon),
+  (q_1, z, z, q_2, \epsilon),
+  (q_1, e, \epsilon, q_2, \epsilon),
+  (q_1, n, \epsilon, q_2, \epsilon),$
+
+  $(q_1, z, \epsilon, q_2, \epsilon),
+  (q_2, e, e, q_2, \epsilon),
+  (q_2, n, n, q_2, \epsilon),
+  (q_2, z, z, q_2, \epsilon),
+  (q_2, A, \epsilon, q_3, A)\\}$
 
 ## Navodila za uporabo
 
