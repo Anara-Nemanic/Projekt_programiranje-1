@@ -13,10 +13,3 @@ let push sklad crka = Sestavljen (crka, sklad)
 let zamenjaj_na_skladu sez = function
   | Prazen -> Prazen (* nikoli ne bo prazen *)
   | Sestavljen (_, sklad) -> List.fold_left push sklad sez 
-
-
-(* let pop = function
-  | Prazen -> None
-  | Sestavljen (_, sklad) -> Some sklad *)
-
-(* let na_koncu sklad = (sklad = Prazen) *)
